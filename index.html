@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Huffman Messenger</title>
+    <title>Huffman Messenger - Sender</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -21,10 +22,22 @@
 
         <div>
             <h1>Huffman Messenger</h1>
-            <span>Message Encoder</span>
+            <span>Sender</span>
         </div>
 
     </div>
+
+
+    <nav>
+        <a href="index.html" class="active">
+            Sender
+        </a>
+
+        <a href="receiver.html">
+            Receiver
+        </a>
+    </nav>
+
 
     <div class="status">
         <span></span>
@@ -60,16 +73,11 @@
         ></textarea>
 
 
-        <div class="action-row">
-
-            <button onclick="encodeMessage()">
-                Encode Message
-            </button>
-
-        </div>
+        <button onclick="encodeMessage()">
+            Encode Message
+        </button>
 
     </section>
-
 
 
     <!-- FREQUENCY + CODES -->
@@ -77,7 +85,7 @@
     <div class="grid-2">
 
 
-        <!-- CHARACTER FREQUENCY -->
+        <!-- FREQUENCY -->
 
         <section class="section">
 
@@ -109,8 +117,7 @@
         </section>
 
 
-
-        <!-- BINARY CODE -->
+        <!-- CODES -->
 
         <section class="section">
 
@@ -144,7 +151,6 @@
     </div>
 
 
-
     <!-- HUFFMAN TREE -->
 
     <section class="section tree-section">
@@ -157,7 +163,9 @@
 
             <div>
                 <h2>Huffman Tree</h2>
-                <small>Generated from character frequency</small>
+                <small>
+                    Generated from character frequency
+                </small>
             </div>
 
         </div>
@@ -173,7 +181,6 @@
         </div>
 
     </section>
-
 
 
     <!-- ENCODED MESSAGE -->
@@ -201,8 +208,18 @@
             Waiting for encoded message...
         </div>
 
-    </section>
 
+        <div class="button-row">
+
+            <button
+                onclick="copyBinary()"
+            >
+                Copy Binary
+            </button>
+
+        </div>
+
+    </section>
 
 
     <!-- TRANSMISSION -->
@@ -220,110 +237,27 @@
     </div>
 
 
+    <!-- NEXT PAGE -->
 
-    <!-- RECEIVER -->
+    <section class="section next-page">
 
-    <section class="section receiver">
+        <h2>Ready to receive?</h2>
 
-        <div class="receiver-head">
-
-            <div class="section-title">
-
-                <div class="title-icon green">
-                    ⌁
-                </div>
-
-                <div>
-                    <h2>Receiver</h2>
-                    <small>Encoded message received</small>
-                </div>
-
-            </div>
+        <p>
+            Copy the binary message and open the Receiver page.
+        </p>
 
 
-            <div class="received-badge">
-
-                <i></i>
-                Ready
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- DECODE -->
-
-    <section class="section receiver-section">
-
-        <div class="section-title">
-
-            <div class="title-icon green">
-                ↯
-            </div>
-
-            <div>
-                <h2>Decode</h2>
-                <small>Follow the Huffman tree</small>
-            </div>
-
-        </div>
-
-
-        <button
-            class="decode-button"
-            onclick="decodeMessage()"
+        <a
+            href="receiver.html"
+            class="receiver-link"
         >
-            Decode Message
-        </button>
-
-
-        <div
-            id="decodeProcess"
-            class="decode-table"
-        >
-
-            <span class="placeholder">
-                Decode the message to see the process.
-            </span>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ORIGINAL MESSAGE -->
-
-    <section class="section original">
-
-        <div class="section-title">
-
-            <div class="title-icon green">
-                ✓
-            </div>
-
-            <div>
-                <h2>Original Message</h2>
-                <small>Recovered message</small>
-            </div>
-
-        </div>
-
-
-        <div
-            id="finalMessage"
-            class="final-message"
-        >
-            Waiting for decoded message...
-        </div>
+            Open Receiver →
+        </a>
 
     </section>
 
 </main>
-
 
 
 <footer>
@@ -331,8 +265,8 @@
 </footer>
 
 
-
 <script src="script.js"></script>
 
 </body>
+
 </html>
