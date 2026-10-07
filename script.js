@@ -1,58 +1,108 @@
+/* =========================================
+   HUFFMAN MESSENGER
+========================================= */
+
+
 let huffmanCodes = {};
+
 let encodedMessage = "";
+
 let huffmanTree = null;
 
 
-// ===============================
-// GET CHARACTER FREQUENCY
-// ===============================
+/* =========================================
+   GET CHARACTER FREQUENCY
+========================================= */
 
 function getFrequency(message) {
 
     const frequency = {};
 
+
     for (let char of message) {
 
         if (frequency[char]) {
+
             frequency[char]++;
+
         } else {
+
             frequency[char] = 1;
+
         }
+
     }
+
 
     return frequency;
 }
 
 
-// ===============================
-// CREATE HUFFMAN TREE
-// ===============================
+/* =========================================
+   CREATE HUFFMAN TREE
+========================================= */
 
 function createHuffmanTree(frequency) {
 
-    let nodes = Object.keys(frequency).map(char => ({
-        char: char,
-        freq: frequency[char],
-        left: null,
-        right: null
-    }));
+    let nodes = [];
 
+
+    for (let char in frequency) {
+
+        nodes.push({
+
+            char: char,
+
+            freq: frequency[char],
+
+            left: null,
+
+            right: null
+
+        });
+
+    }
+
+
+    /* Only one unique character */
+
+    if (nodes.length === 1) {
+
+        return nodes[0];
+
+    }
+
+
+    /* Create tree */
 
     while (nodes.length > 1) {
 
-        nodes.sort((a, b) => a.freq - b.freq);
+        nodes.sort(
+            (a, b) => a.freq - b.freq
+        );
+
 
         const left = nodes.shift();
+
         const right = nodes.shift();
 
+
         const newNode = {
+
             char: null,
-            freq: left.freq + right.freq,
+
+            freq:
+                left.freq + right.freq,
+
             left: left,
+
             right: right
+
         };
 
+
         nodes.push(newNode);
+
     }
 
 
@@ -60,14 +110,23 @@ function createHuffmanTree(frequency) {
 }
 
 
-// ===============================
-// GENERATE HUFFMAN CODES
-// ===============================
+/* =========================================
+   GENERATE HUFFMAN CODES
+========================================= */
 
-function generateCodes(node, code = "") {
+function generateCodes(
+    node,
+    code = ""
+) {
 
-    if (!node) return;
+    if (!node) {
 
+        return;
+
+    }
+
+
+    /* Leaf node */
 
     if (node.char !== null) {
 
@@ -75,199 +134,363 @@ function generateCodes(node, code = "") {
             code === "" ? "0" : code;
 
         return;
+
     }
 
 
-    generateCodes(node.left, code + "0");
+    generateCodes(
+        node.left,
+        code + "0"
+    );
 
-    generateCodes(node.right, code + "1");
+
+    generateCodes(
+        node.right,
+        code + "1"
+    );
 }
 
 
-// ===============================
-// ENCODE
-// ===============================
+/* =========================================
+   ENCODE MESSAGE
+========================================= */
 
 function encode(message) {
 
     let result = "";
 
+
     for (let char of message) {
 
-        result += huffmanCodes[char];
+        result +=
+            huffmanCodes[char];
+
     }
+
 
     return result;
 }
 
 
-// ===============================
-// ENCODE MESSAGE
-// ===============================
+/* =========================================
+   DISPLAY FREQUENCY
+========================================= */
 
-function encodeMessage() {
+function displayFrequency(
+    frequency
+) {
 
-    const message =
-        document.getElementById("message").value;
+    const box =
+        document.getElementById(
+            "frequency"
+        );
 
 
-    if (!message.trim()) {
-
-        alert("Please enter a message.");
+    if (!box) {
 
         return;
+
     }
 
 
-    // Character Frequency
+    let html = `
 
-    const frequency =
-        getFrequency(message);
-
-
-    let frequencyHTML = `
         <table>
-            <thead>
-                <tr>
-                    <th>Character</th>
-                    <th>Frequency</th>
-                </tr>
-            </thead>
-            <tbody>
+
+            <tr>
+
+                <th>
+                    Character
+                </th>
+
+                <th>
+                    Frequency
+                </th>
+
+            </tr>
+
     `;
 
 
     for (let char in frequency) {
 
-        const displayChar =
-            char === " " ? "Space" : char;
+        let displayChar = char;
 
-        frequencyHTML += `
+
+        if (char === " ") {
+
+            displayChar = "Space";
+
+        }
+
+
+        html += `
+
             <tr>
-                <td>${displayChar}</td>
-                <td>${frequency[char]}</td>
+
+                <td>
+                    ${displayChar}
+                </td>
+
+                <td>
+                    ${frequency[char]}
+                </td>
+
             </tr>
+
         `;
+
     }
 
 
-    frequencyHTML += `
-            </tbody>
-        </table>
+    html += `</table>`;
+
+
+    box.innerHTML = html;
+}
+
+
+/* =========================================
+   DISPLAY CODES
+========================================= */
+
+function displayCodes(
+    codes,
+    elementId = "codes"
+) {
+
+    const box =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (!box) {
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <tr>
+
+                <th>
+                    Character
+                </th>
+
+                <th>
+                    Code
+                </th>
+
+            </tr>
+
     `;
 
 
-    document.getElementById("frequency").innerHTML =
-        frequencyHTML;
+    for (let char in codes) {
+
+        let displayChar = char;
 
 
-    // Create Huffman Tree
+        if (char === " ") {
+
+            displayChar = "Space";
+
+        }
+
+
+        html += `
+
+            <tr>
+
+                <td>
+                    ${displayChar}
+                </td>
+
+                <td>
+                    <strong>
+                        ${codes[char]}
+                    </strong>
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    html += `</table>`;
+
+
+    box.innerHTML = html;
+}
+
+
+/* =========================================
+   SENDER - ENCODE
+========================================= */
+
+function encodeMessage() {
+
+    const messageBox =
+        document.getElementById(
+            "message"
+        );
+
+
+    if (!messageBox) {
+
+        return;
+
+    }
+
+
+    const message =
+        messageBox.value;
+
+
+    if (message.length === 0) {
+
+        return;
+
+    }
+
+
+    /* Frequency */
+
+    const frequency =
+        getFrequency(message);
+
+
+    /* Huffman Tree */
 
     huffmanTree =
-        createHuffmanTree(frequency);
+        createHuffmanTree(
+            frequency
+        );
 
 
-    // Generate Codes
+    /* Clear previous codes */
 
     huffmanCodes = {};
 
-    generateCodes(huffmanTree);
+
+    /* Generate codes */
+
+    generateCodes(
+        huffmanTree
+    );
 
 
-    // Show Binary Codes
-
-    let codesHTML = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Character</th>
-                    <th>Code</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-
-    for (let char in huffmanCodes) {
-
-        const displayChar =
-            char === " " ? "Space" : char;
-
-        codesHTML += `
-            <tr>
-                <td>${displayChar}</td>
-                <td><strong>${huffmanCodes[char]}</strong></td>
-            </tr>
-        `;
-    }
-
-
-    codesHTML += `
-            </tbody>
-        </table>
-    `;
-
-
-    document.getElementById("codes").innerHTML =
-        codesHTML;
-
-
-    // Encode Message
+    /* Encode */
 
     encodedMessage =
         encode(message);
 
 
-    document.getElementById("encoded").textContent =
+    /* Display */
+
+    displayFrequency(
+        frequency
+    );
+
+
+    displayCodes(
+        huffmanCodes
+    );
+
+
+    document.getElementById(
+        "encoded"
+    ).textContent =
         encodedMessage;
 
 
-    // Draw Tree
+    /* Draw tree */
 
-    drawTree(huffmanTree);
-
-
-    // Reset Decode Area
-
-    document.getElementById("decodeProcess").innerHTML =
-        `<span class="placeholder">
-            Decode the message to see the process.
-        </span>`;
+    drawTree(
+        huffmanTree
+    );
 
 
-    document.getElementById("finalMessage").textContent =
-        "Waiting for decoded message...";
+    /*
+        Save codes internally.
+
+        User only sees/copies
+        the binary.
+    */
+
+    localStorage.setItem(
+        "huffmanCodes",
+        JSON.stringify(
+            huffmanCodes
+        )
+    );
+
 }
 
 
-// ===============================
-// OPTIMIZED HUFFMAN TREE
-// ===============================
+/* =========================================
+   COPY ONLY BINARY
+========================================= */
+
+function copyBinary() {
+
+    if (!encodedMessage) {
+
+        return;
+
+    }
+
+
+    navigator.clipboard.writeText(
+        encodedMessage
+    );
+
+}
+
+
+/* =========================================
+   DRAW HUFFMAN TREE
+========================================= */
 
 function drawTree(root) {
 
     const svg =
-        document.getElementById("tree");
+        document.getElementById(
+            "tree"
+        );
 
 
-    // Remove old tree efficiently
+    if (!svg || !root) {
 
-    svg.replaceChildren();
+        return;
+
+    }
 
 
-    if (!root) return;
+    svg.innerHTML = "";
 
-
-    // =========================
-    // COLLECT LEAVES
-    // =========================
 
     const leaves = [];
 
 
-    function collectLeaves(node) {
+    /* Find leaves */
 
-        if (!node) return;
+    function collectLeaves(
+        node
+    ) {
+
+        if (!node) {
+
+            return;
+
+        }
 
 
         if (node.char !== null) {
@@ -275,68 +498,36 @@ function drawTree(root) {
             leaves.push(node);
 
             return;
+
         }
 
 
-        collectLeaves(node.left);
-        collectLeaves(node.right);
+        collectLeaves(
+            node.left
+        );
+
+
+        collectLeaves(
+            node.right
+        );
+
     }
 
 
     collectLeaves(root);
 
 
-    // =========================
-    // TREE SIZE
-    // =========================
-
-    const leafGap =
-        Math.max(
-            100,
-            Math.min(
-                135,
-                1000 / Math.max(leaves.length, 1)
-            )
-        );
-
-
-    const leftMargin = 60;
+    const spacing = 130;
 
 
     const width =
         Math.max(
-            700,
-            leftMargin +
-            (leaves.length - 1) * leafGap +
-            100
+            600,
+            leaves.length * spacing
         );
 
 
-    function getDepth(node) {
-
-        if (!node) return 0;
-
-
-        return 1 +
-            Math.max(
-                getDepth(node.left),
-                getDepth(node.right)
-            );
-    }
-
-
-    const depth =
-        getDepth(root);
-
-
-    const levelGap = 70;
-
-
-    const height =
-        Math.max(
-            420,
-            depth * levelGap + 70
-        );
+    const height = 350;
 
 
     svg.setAttribute(
@@ -351,542 +542,673 @@ function drawTree(root) {
     );
 
 
-    svg.setAttribute(
-        "viewBox",
-        `0 0 ${width} ${height}`
-    );
-
-
-    // =========================
-    // POSITION NODES
-    // =========================
-
     const positions =
         new Map();
 
 
-    leaves.forEach((leaf, index) => {
+    /* Position nodes */
+
+    function place(
+        node,
+        depth,
+        minX,
+        maxX
+    ) {
+
+        if (!node) {
+
+            return;
+
+        }
+
+
+        const x =
+            (minX + maxX) / 2;
+
+
+        const y =
+            50 + depth * 100;
+
 
         positions.set(
-            leaf,
+            node,
             {
-                x: leftMargin + index * leafGap,
-                y: height - 50
+                x: x,
+                y: y
             }
         );
 
-    });
 
-
-    function positionNodes(
-        node,
-        level = 0
-    ) {
-
-        if (
-            !node ||
-            node.char !== null
-        ) {
-            return;
-        }
-
-
-        positionNodes(
+        place(
             node.left,
-            level + 1
+            depth + 1,
+            minX,
+            x
         );
 
 
-        positionNodes(
+        place(
             node.right,
-            level + 1
+            depth + 1,
+            x,
+            maxX
         );
 
-
-        const left =
-            positions.get(node.left);
-
-
-        const right =
-            positions.get(node.right);
-
-
-        if (left && right) {
-
-            positions.set(
-                node,
-                {
-                    x: (left.x + right.x) / 2,
-                    y: 40 + level * levelGap
-                }
-            );
-
-        } else if (left) {
-
-            positions.set(
-                node,
-                {
-                    x: left.x,
-                    y: 40 + level * levelGap
-                }
-            );
-
-        } else if (right) {
-
-            positions.set(
-                node,
-                {
-                    x: right.x,
-                    y: 40 + level * levelGap
-                }
-            );
-        }
     }
 
 
-    positionNodes(root);
+    place(
+        root,
+        0,
+        0,
+        width
+    );
 
 
-    // =========================
-    // SVG HELPER
-    // =========================
+    /* Draw edges */
 
-    const NS =
-        "http://www.w3.org/2000/svg";
-
-
-    function createSVGElement(
-        type,
-        attributes = {},
-        text = ""
+    function drawEdges(
+        node
     ) {
 
-        const element =
-            document.createElementNS(
-                NS,
-                type
-            );
+        if (!node) {
 
+            return;
 
-        for (
-            const key in attributes
-        ) {
-
-            element.setAttribute(
-                key,
-                attributes[key]
-            );
         }
 
 
-        if (text) {
-
-            element.textContent =
-                text;
-        }
-
-
-        return element;
-    }
-
-
-    // =========================
-    // DOCUMENT FRAGMENT
-    // =========================
-
-    const fragment =
-        document.createDocumentFragment();
-
-
-    // =========================
-    // DRAW TREE
-    // =========================
-
-    function drawNode(node) {
-
-        if (!node) return;
-
-
-        const pos =
+        const parent =
             positions.get(node);
 
-
-        if (!pos) return;
-
-
-        // LEFT CONNECTION
 
         if (node.left) {
 
             const child =
-                positions.get(node.left);
-
-
-            if (child) {
-
-                fragment.appendChild(
-                    createSVGElement(
-                        "line",
-                        {
-                            x1: pos.x,
-                            y1: pos.y,
-                            x2: child.x,
-                            y2: child.y,
-                            class: "tree-line"
-                        }
-                    )
+                positions.get(
+                    node.left
                 );
 
 
-                fragment.appendChild(
-                    createSVGElement(
-                        "text",
-                        {
-                            x:
-                                (pos.x + child.x) / 2 - 7,
-                            y:
-                                (pos.y + child.y) / 2 - 5,
-                            class: "tree-bit"
-                        },
-                        "0"
-                    )
-                );
-            }
+            drawLine(
+                parent,
+                child,
+                "0"
+            );
+
+
+            drawEdges(
+                node.left
+            );
+
         }
 
-
-        // RIGHT CONNECTION
 
         if (node.right) {
 
             const child =
-                positions.get(node.right);
-
-
-            if (child) {
-
-                fragment.appendChild(
-                    createSVGElement(
-                        "line",
-                        {
-                            x1: pos.x,
-                            y1: pos.y,
-                            x2: child.x,
-                            y2: child.y,
-                            class: "tree-line"
-                        }
-                    )
+                positions.get(
+                    node.right
                 );
 
 
-                fragment.appendChild(
-                    createSVGElement(
-                        "text",
-                        {
-                            x:
-                                (pos.x + child.x) / 2 + 5,
-                            y:
-                                (pos.y + child.y) / 2 - 5,
-                            class: "tree-bit"
-                        },
-                        "1"
-                    )
-                );
-            }
-        }
-
-
-        // NODE CIRCLE
-
-        fragment.appendChild(
-            createSVGElement(
-                "circle",
-                {
-                    cx: pos.x,
-                    cy: pos.y,
-                    r: 23,
-                    class:
-                        node.char !== null
-                            ? "tree-node leaf"
-                            : "tree-node internal"
-                }
-            )
-        );
-
-
-        // FREQUENCY
-
-        fragment.appendChild(
-            createSVGElement(
-                "text",
-                {
-                    x: pos.x,
-                    y: pos.y + 4,
-                    class: "tree-frequency"
-                },
-                String(node.freq)
-            )
-        );
-
-
-        // CHARACTER
-
-        if (node.char !== null) {
-
-            fragment.appendChild(
-                createSVGElement(
-                    "text",
-                    {
-                        x: pos.x,
-                        y: pos.y + 41,
-                        class: "tree-label"
-                    },
-                    node.char === " "
-                        ? "Space"
-                        : node.char
-                )
+            drawLine(
+                parent,
+                child,
+                "1"
             );
+
+
+            drawEdges(
+                node.right
+            );
+
         }
 
-
-        drawNode(node.left);
-
-        drawNode(node.right);
     }
 
 
-    drawNode(root);
+    /* Draw line */
+
+    function drawLine(
+        from,
+        to,
+        bit
+    ) {
+
+        const line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
 
 
-    // Add all SVG elements at once
+        line.setAttribute(
+            "x1",
+            from.x
+        );
 
-    svg.appendChild(fragment);
+
+        line.setAttribute(
+            "y1",
+            from.y
+        );
+
+
+        line.setAttribute(
+            "x2",
+            to.x
+        );
+
+
+        line.setAttribute(
+            "y2",
+            to.y
+        );
+
+
+        line.setAttribute(
+            "class",
+            "tree-line"
+        );
+
+
+        svg.appendChild(
+            line
+        );
+
+
+        const text =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text"
+            );
+
+
+        text.setAttribute(
+            "x",
+            (from.x + to.x) / 2
+        );
+
+
+        text.setAttribute(
+            "y",
+            (from.y + to.y) / 2
+        );
+
+
+        text.setAttribute(
+            "class",
+            "tree-bit"
+        );
+
+
+        text.textContent =
+            bit;
+
+
+        svg.appendChild(
+            text
+        );
+
+    }
+
+
+    drawEdges(root);
+
+
+    /* Draw nodes */
+
+    for (
+        let [node, pos]
+        of positions
+    ) {
+
+        const circle =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+
+        circle.setAttribute(
+            "cx",
+            pos.x
+        );
+
+
+        circle.setAttribute(
+            "cy",
+            pos.y
+        );
+
+
+        circle.setAttribute(
+            "r",
+            28
+        );
+
+
+        circle.setAttribute(
+            "class",
+
+            node.char === null
+                ? "tree-node internal"
+                : "tree-node leaf"
+        );
+
+
+        svg.appendChild(
+            circle
+        );
+
+
+        const label =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text"
+            );
+
+
+        label.setAttribute(
+            "x",
+            pos.x
+        );
+
+
+        label.setAttribute(
+            "y",
+            pos.y + 5
+        );
+
+
+        label.setAttribute(
+            "class",
+            "tree-label"
+        );
+
+
+        if (
+            node.char !== null
+        ) {
+
+            label.textContent =
+                node.char === " "
+                    ? "Space"
+                    : node.char;
+
+        } else {
+
+            label.textContent =
+                node.freq;
+
+        }
+
+
+        svg.appendChild(
+            label
+        );
+
+    }
+
 }
 
 
-// ===============================
-// DECODE MESSAGE
-// ===============================
+/* =========================================
+   RECEIVER - RECEIVE BINARY
+========================================= */
 
-function decodeMessage() {
+function receiveBinary() {
 
-    if (
-        !encodedMessage ||
-        !huffmanTree
-    ) {
-
-        alert(
-            "Please encode a message first."
+    const input =
+        document.getElementById(
+            "receivedData"
         );
 
+
+    if (!input) {
+
         return;
+
     }
 
 
-    let current =
-        huffmanTree;
+    const binary =
+        input.value.trim();
+
+
+    if (!binary) {
+
+        return;
+
+    }
+
+
+    /* Check binary */
+
+    if (
+        !/^[01]+$/.test(binary)
+    ) {
+
+        alert(
+            "Only 0 and 1 are allowed."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Get Huffman codes
+        saved by Sender.
+    */
+
+    const savedCodes =
+        localStorage.getItem(
+            "huffmanCodes"
+        );
+
+
+    if (!savedCodes) {
+
+        alert(
+            "Please encode a message from the Sender page first."
+        );
+
+        return;
+
+    }
+
+
+    window.receivedBinary =
+        binary;
+
+
+    window.receivedCodes =
+        JSON.parse(
+            savedCodes
+        );
+
+
+    /* Display binary */
+
+    document.getElementById(
+        "receivedBinary"
+    ).textContent =
+        binary;
+
+
+    /* Display codes */
+
+    displayCodes(
+        window.receivedCodes,
+        "receivedCodes"
+    );
+
+}
+
+
+/* =========================================
+   BUILD TREE FROM HUFFMAN CODES
+========================================= */
+
+function buildTreeFromCodes(
+    codes
+) {
+
+    const root = {
+
+        char: null,
+
+        freq: 0,
+
+        left: null,
+
+        right: null
+
+    };
+
+
+    for (
+        let char in codes
+    ) {
+
+        const code =
+            codes[char];
+
+
+        let node = root;
+
+
+        for (
+            let bit of code
+        ) {
+
+            if (bit === "0") {
+
+                if (!node.left) {
+
+                    node.left = {
+
+                        char: null,
+
+                        freq: 0,
+
+                        left: null,
+
+                        right: null
+
+                    };
+
+                }
+
+
+                node =
+                    node.left;
+
+            } else {
+
+                if (!node.right) {
+
+                    node.right = {
+
+                        char: null,
+
+                        freq: 0,
+
+                        left: null,
+
+                        right: null
+
+                    };
+
+                }
+
+
+                node =
+                    node.right;
+
+            }
+
+        }
+
+
+        node.char =
+            char;
+
+    }
+
+
+    return root;
+}
+
+
+/* =========================================
+   RECEIVER - DECODE
+========================================= */
+
+function decodeReceivedMessage() {
+
+    if (
+        !window.receivedCodes ||
+        !window.receivedBinary
+    ) {
+
+        alert(
+            "Please receive the binary message first."
+        );
+
+        return;
+
+    }
+
+
+    const codes =
+        window.receivedCodes;
+
+
+    const binary =
+        window.receivedBinary;
+
+
+    const root =
+        buildTreeFromCodes(
+            codes
+        );
+
+
+    let node = root;
 
 
     let decoded = "";
 
 
-    let processHTML = `
+    let steps = `
+
         <table>
 
-            <thead>
+            <tr>
 
-                <tr>
-                    <th>Step</th>
-                    <th>Bit Read</th>
-                    <th>Bits Taken</th>
-                    <th>Tree Movement</th>
-                    <th>Character</th>
-                    <th>Action</th>
-                </tr>
+                <th>
+                    Step
+                </th>
 
-            </thead>
+                <th>
+                    Bit
+                </th>
 
-            <tbody>
+                <th>
+                    Character
+                </th>
+
+                <th>
+                    Action
+                </th>
+
+            </tr>
+
     `;
 
 
-    let step = 0;
-
-    let bitsTaken = "";
+    let step = 1;
 
 
-    // =========================
-    // SINGLE CHARACTER
-    // =========================
+    /* Decode every bit */
 
-    if (
-        huffmanTree.left === null &&
-        huffmanTree.right === null
+    for (
+        let bit of binary
     ) {
 
-        for (
-            let i = 0;
-            i < encodedMessage.length;
-            i++
+        if (bit === "0") {
+
+            node =
+                node.left;
+
+        } else {
+
+            node =
+                node.right;
+
+        }
+
+
+        /* Invalid path */
+
+        if (!node) {
+
+            alert(
+                "Invalid binary message."
+            );
+
+            return;
+
+        }
+
+
+        let character = "-";
+
+
+        let action =
+            "Move through Huffman tree";
+
+
+        /* Character found */
+
+        if (
+            node.char !== null
         ) {
 
-            step++;
-
-
-            bitsTaken +=
-                encodedMessage[i];
+            character =
+                node.char === " "
+                    ? "Space"
+                    : node.char;
 
 
             decoded +=
-                huffmanTree.char;
+                node.char;
 
 
-            processHTML += `
-                <tr>
-
-                    <td>${step}</td>
-
-                    <td>
-                        ${encodedMessage[i]}
-                    </td>
-
-                    <td>
-                        ${bitsTaken}
-                    </td>
-
-                    <td>
-                        Root
-                    </td>
-
-                    <td>
-                        ${
-                            huffmanTree.char === " "
-                                ? "Space"
-                                : huffmanTree.char
-                        }
-                    </td>
-
-                    <td>
-                        Character found
-                    </td>
-
-                </tr>
-            `;
+            action =
+                "Character decoded";
 
 
-            bitsTaken = "";
+            node = root;
+
         }
+
+
+        steps += `
+
+            <tr>
+
+                <td>
+                    ${step}
+                </td>
+
+                <td>
+                    ${bit}
+                </td>
+
+                <td>
+                    ${character}
+                </td>
+
+                <td>
+                    ${action}
+                </td>
+
+            </tr>
+
+        `;
+
+
+        step++;
 
     }
 
-    // =========================
-    // NORMAL TREE TRAVERSAL
-    // =========================
 
-    else {
-
-        for (
-            let i = 0;
-            i < encodedMessage.length;
-            i++
-        ) {
-
-            const bit =
-                encodedMessage[i];
-
-
-            step++;
-
-
-            bitsTaken += bit;
-
-
-            // Move through tree
-
-            if (bit === "0") {
-
-                current =
-                    current.left;
-
-            } else {
-
-                current =
-                    current.right;
-            }
-
-
-            const movement =
-                bit === "0"
-                    ? "Move Left"
-                    : "Move Right";
-
-
-            let character = "-";
-
-            let action = "Continue";
-
-
-            // Character found
-
-            if (
-                current &&
-                current.char !== null
-            ) {
-
-                character =
-                    current.char === " "
-                        ? "Space"
-                        : current.char;
-
-
-                decoded +=
-                    current.char;
-
-
-                action =
-                    "Character found";
-
-
-                current =
-                    huffmanTree;
-
-
-                bitsTaken = "";
-            }
-
-
-            processHTML += `
-                <tr>
-
-                    <td>${step}</td>
-
-                    <td>${bit}</td>
-
-                    <td>
-                        ${bitsTaken || "—"}
-                    </td>
-
-                    <td>
-                        ${movement}
-                    </td>
-
-                    <td>
-                        ${character}
-                    </td>
-
-                    <td>
-                        ${action}
-                    </td>
-
-                </tr>
-            `;
-        }
-    }
-
-
-    processHTML += `
-            </tbody>
-
+    steps += `
         </table>
     `;
 
@@ -894,11 +1216,12 @@ function decodeMessage() {
     document.getElementById(
         "decodeProcess"
     ).innerHTML =
-        processHTML;
+        steps;
 
 
     document.getElementById(
         "finalMessage"
     ).textContent =
         decoded;
+
 }
