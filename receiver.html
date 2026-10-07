@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Huffman Messenger - Receiver</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="logo">
+            HM
+        </div>
+
+        <div>
+
+            <h1>
+                Huffman Messenger
+            </h1>
+
+            <span>
+                Receiver
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <nav>
+
+        <a href="index.html">
+            Sender
+        </a>
+
+        <a
+            href="receiver.html"
+            class="active"
+        >
+            Receiver
+        </a>
+
+    </nav>
+
+
+    <div class="status">
+
+        <span></span>
+
+        Ready to Receive
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+
+    <!-- RECEIVER -->
+
+    <section class="section receiver">
+
+        <div class="section-title">
+
+            <div class="title-icon green">
+                ⌁
+            </div>
+
+            <div>
+
+                <h2>
+                    Receiver
+                </h2>
+
+                <small>
+                    Receive encoded message
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <label class="input-label">
+            Paste Binary Message
+        </label>
+
+
+        <textarea
+            id="receivedData"
+            class="receive-input"
+            placeholder="Paste the binary message received from the Sender..."
+        ></textarea>
+
+
+        <button onclick="receiveBinary()">
+            Receive Binary
+        </button>
+
+    </section>
+
+
+
+    <!-- RECEIVED BINARY -->
+
+    <section class="section encoded-section">
+
+        <div class="section-title">
+
+            <div class="title-icon dark">
+                01
+            </div>
+
+            <div>
+
+                <h2>
+                    Received Binary
+                </h2>
+
+                <small>
+                    Encoded transmission
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="receivedBinary"
+            class="encoded-box"
+        >
+
+            Waiting for binary message...
+
+        </div>
+
+    </section>
+
+
+
+    <!-- RECEIVED CODES -->
+
+    <section class="section">
+
+        <div class="section-title">
+
+            <div class="title-icon purple">
+                01
+            </div>
+
+            <div>
+
+                <h2>
+                    Huffman Codes
+                </h2>
+
+                <small>
+                    Codes used for decoding
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="receivedCodes"
+            class="content-box"
+        >
+
+            <span class="placeholder">
+                No codes available yet
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- DECODE -->
+
+    <section class="section receiver-section">
+
+        <div class="section-title">
+
+            <div class="title-icon green">
+                ↯
+            </div>
+
+            <div>
+
+                <h2>
+                    Decode
+                </h2>
+
+                <small>
+                    Follow the Huffman tree
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="decode-button"
+            onclick="decodeReceivedMessage()"
+        >
+            Decode Message
+        </button>
+
+
+        <div
+            id="decodeProcess"
+            class="decode-table"
+        >
+
+            <span class="placeholder">
+                Receive the binary first.
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ORIGINAL MESSAGE -->
+
+    <section class="section original">
+
+        <div class="section-title">
+
+            <div class="title-icon green">
+                ✓
+            </div>
+
+            <div>
+
+                <h2>
+                    Original Message
+                </h2>
+
+                <small>
+                    Recovered message
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="finalMessage"
+            class="final-message"
+        >
+
+            Waiting for decoded message...
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<footer>
+    Huffman Messenger
+</footer>
+
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
